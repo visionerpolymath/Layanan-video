@@ -4,90 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Layanan Video - Top Up Koin</title>
-  <!-- Pustaka Resmi Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; background-color: #f8fafc; color: #1e293b; }
-    .card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px; }
-    .balance { font-size: 32px; font-weight: bold; color: #2563eb; margin: 10px 0; }
-    .user-id { font-size: 12px; color: #64748b; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; display: inline-block; }
-    iframe { border: none; border-radius: 16px; width: 100%; height: 600px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .card { background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 480px; text-align: center; }
+    .balance-box { background: #f1f5f9; padding: 16px; border-radius: 12px; margin-bottom: 20px; }
+    .balance-title { color: #64748b; font-size: 14px; margin: 0 0 8px 0; font-weight: 600; }
+    .balance-amount { font-size: 28px; font-weight: 800; color: #2563eb; margin: 0; }
+    .device-id { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 16px; }
+    .btn-pay { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; font-weight: 700; padding: 14px; border-radius: 12px; font-size: 16px; border: none; cursor: pointer; transition: background 0.2s; margin-bottom: 15px; }
+    .btn-pay:hover { background: #1d4ed8; }
+    iframe { width: 100%; height: 520px; border: 1px solid #e2e8f0; border-radius: 12px; }
   </style>
 </head>
 <body>
 
-  <!-- Card Saldo User -->
   <div class="card">
-    <h2>Saldo Kamu</h2>
-    <div class="balance" id="koin-balance">0 Koin</div>
-    <p>ID Perangkat: <span class="user-id" id="user-id">Memuat...</span></p>
+    <div class="balance-box">
+      <p class="balance-title">Saldo Kamu</p>
+      <p class="balance-amount">0 Koin</p>
+      <div class="device-id">ID Perangkat: <span id="device-id">Memuat...</span></div>
+    </div>
+
+    <div class="section-title">Beli Koin via QRIS / Bank (Rupiah)</div>
+
+    <!-- Tombol Utama untuk Pembayaran -->
+    <a href="https://app.openpeer.xyz?currency=IDR&asset=USDT&address=0x61fc40493e894D80ee01CeECfcf5AEd8a687a5CC" target="_blank" class="btn-pay">
+      💳 Klik Di Sini Bayar QRIS / Bank (IDR)
+    </a>
+
+    <!-- Widget Tampilan Lengkap -->
+    <iframe src="https://app.openpeer.xyz?currency=IDR&asset=USDT&address=0x61fc40493e894D80ee01CeECfcf5AEd8a687a5CC" allow="camera; clipboard-write"></iframe>
   </div>
 
-  <h3 style="text-align: center; margin-bottom: 15px;">Beli Koin via QRIS</h3>
-  
-  <!-- Widget OpenPeer (Pakai alamat dompet dummy sementara untuk test) -->
-  <iframe
-    id="openpeer-widget"
-    src="https://openpeer.xyz/embed?address=0x61fc40493e894D80ee01CeECfcf5AEd8a687a5CC&fiat=IDR&crypto=USDT"
-    allow="camera; clipboard-write">
-  </iframe>
-
   <script>
-    // Inisialisasi Supabase
-    const SUPABASE_URL = "https://ifpmmjfmbwxrfxlkinub.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmcG1tamZtYnd4cmZ4bGtpbnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxOTk5NjksImV4cCI6MjA2OTc3NTk2OX0.tk0lzKG8DHvYvYc5mVaKMY86Wu7mi8WPgnGlzOREuFk";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // Buat ID User Unik
-    let userId = localStorage.getItem('app_user_id');
-    if (!userId) {
-      userId = 'user_' + Math.random().toString(36).substring(2, 10);
-      localStorage.setItem('app_user_id', userId);
+    // Membuat ID Perangkat Otomatis Pembeli
+    let devId = localStorage.getItem('user_device_id');
+    if (!devId) {
+      devId = 'ID-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+      localStorage.setItem('user_device_id', devId);
     }
-    document.getElementById('user-id').innerText = userId;
-
-    // Fungsi Muat Saldo
-    async function loadBalance() {
-      let { data: profile, error } = await supabase
-        .from('profiles')
-        .select('koin_balance')
-        .eq('user_id', userId)
-        .single();
-
-      if (error && error.code === 'PGRST116') {
-        const { data: newProfile } = await supabase
-          .from('profiles')
-          .insert([{ user_id: userId, koin_balance: 0 }])
-          .select()
-          .single();
-        profile = newProfile;
-      }
-
-      if (profile) {
-        document.getElementById('koin-balance').innerText = `${profile.koin_balance} Koin`;
-      }
-    }
-
-    // Deteksi Pembayaran OpenPeer
-    window.addEventListener('message', async (event) => {
-      if (event.origin !== 'https://openpeer.xyz') return;
-
-      if (event.data && event.data.type === 'OPENPEER_ORDER_COMPLETED') {
-        const koinTambah = 100;
-        const { data: current } = await supabase
-          .from('profiles').select('koin_balance').eq('user_id', userId).single();
-
-        const newBalance = (current?.koin_balance || 0) + koinTambah;
-
-        await supabase.from('profiles').update({ koin_balance: newBalance }).eq('user_id', userId);
-        await supabase.from('transactions').insert([{ user_id: userId, koin_added: koinTambah, status: 'completed' }]);
-
-        alert(`Pembayaran Sukses! Selamat, +${koinTambah} Koin telah ditambahkan.`);
-        loadBalance();
-      }
-    });
-
-    loadBalance();
+    document.getElementById('device-id').innerText = devId;
   </script>
+
 </body>
 </html>
