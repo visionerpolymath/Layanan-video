@@ -13,6 +13,15 @@
     .title { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #f1f5f9; }
     .subtitle { text-align: center; font-size: 14px; color: #94a3b8; margin-bottom: 24px; }
     
+    /* Tombol Social Login */
+    .social-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; border: 1px solid #475569; margin-bottom: 12px; transition: background 0.2s; background: #0f172a; color: white; }
+    .social-btn:hover { background: #1e293b; }
+    .social-btn img { width: 20px; height: 20px; }
+    
+    .divider { display: flex; align-items: center; text-align: center; color: #64748b; font-size: 12px; margin: 20px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #334155; }
+    .divider span { padding: 0 10px; }
+
     .form-group { margin-bottom: 16px; }
     label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: 500; }
     input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 14px; outline: none; }
@@ -33,10 +42,24 @@
 
   <div class="auth-card">
     <div class="title" id="form-title">Masuk Penonton</div>
-    <div class="subtitle" id="form-subtitle">Silakan login untuk menikmati konten video</div>
+    <div class="subtitle" id="form-subtitle">Pilih metode masuk untuk menonton</div>
 
     <div id="alert-msg" class="alert"></div>
 
+    <!-- Tombol Login Google & Facebook -->
+    <button type="button" class="social-btn" onclick="loginWithProvider('google')">
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+      Lanjutkan dengan Google
+    </button>
+
+    <button type="button" class="social-btn" onclick="loginWithProvider('facebook')">
+      <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook">
+      Lanjutkan dengan Facebook
+    </button>
+
+    <div class="divider"><span>Atau pakai email</span></div>
+
+    <!-- Form Email & Password -->
     <form id="auth-form">
       <div class="form-group">
         <label for="email">Alamat Email</label>
@@ -58,21 +81,28 @@
   </div>
 
   <script>
-    // URL Supabase milikmu
     const SUPABASE_URL = "https://ifpmmjfmbwxrfxlkinub.supabase.co";
-    
-    // Token JWT Anon Key milikmu dari catatan
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmcG1tamZtNGNtejRiR3RwYm5WaWxpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzT0RVMk56STBORDVzSW1WNGNDSTZNakV3TVRBME1EQTBNWDAtazBsektHOERIdll2WTVtVmFLTVk4Nld1N21pOFdQZ25GbHpPUkV1Rms=";
 
-    // Inisialisasi Supabase Client
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let isLoginMode = true;
 
+    // Login via Google / Facebook
+    async function loginWithProvider(providerName) {
+      hideAlert();
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: providerName,
+        options: {
+          redirectTo: window.location.href
+        }
+      });
+      if (error) showAlert(error.message, 'error');
+    }
+
     function toggleMode() {
       isLoginMode = !isLoginMode;
       const title = document.getElementById('form-title');
-      const subtitle = document.getElementById('form-subtitle');
       const btnText = document.getElementById('btn-text');
       const toggleLabel = document.getElementById('toggle-label');
       const toggleBtn = document.getElementById('toggle-btn');
@@ -80,13 +110,11 @@
 
       if (isLoginMode) {
         title.innerText = "Masuk Penonton";
-        subtitle.innerText = "Silakan login untuk menikmati konten video";
         btnText.innerText = "Masuk";
         toggleLabel.innerText = "Belum punya akun?";
         toggleBtn.innerText = "Daftar Sekarang";
       } else {
         title.innerText = "Daftar Akun Baru";
-        subtitle.innerText = "Buat akun penonton untuk mengakses video";
         btnText.innerText = "Daftar";
         toggleLabel.innerText = "Sudah punya akun?";
         toggleBtn.innerText = "Masuk di sini";
@@ -106,14 +134,13 @@
           showAlert(error.message, 'error');
         } else {
           showAlert('Login berhasil!', 'success');
-          console.log('User logged in:', data.user);
         }
       } else {
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) {
           showAlert(error.message, 'error');
         } else {
-          showAlert('Pendaftaran berhasil! Silakan masuk.', 'success');
+          showAlert('Pendaftaran berhasil! Cek email kamu untuk konfirmasi, atau matikan "Confirm Email" di Supabase.', 'success');
         }
       }
     });
