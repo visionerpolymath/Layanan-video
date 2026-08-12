@@ -3,160 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Layanan Video - Masuk / Daftar</title>
-  <!-- Supabase JS Client Library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .auth-card { background: #1e293b; padding: 32px 24px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; border: 1px solid #334155; }
-    .title { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #f1f5f9; }
-    .subtitle { text-align: center; font-size: 14px; color: #94a3b8; margin-bottom: 24px; }
-    
-    /* Tombol Social Login */
-    .social-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; border: 1px solid #475569; margin-bottom: 12px; transition: background 0.2s; background: #0f172a; color: white; }
-    .social-btn:hover { background: #1e293b; }
-    .social-btn img { width: 20px; height: 20px; }
-    
-    .divider { display: flex; align-items: center; text-align: center; color: #64748b; font-size: 12px; margin: 20px 0; }
-    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #334155; }
-    .divider span { padding: 0 10px; }
-
-    .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: 500; }
-    input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 14px; outline: none; }
-    input:focus { border-color: #3b82f6; }
-    
-    .btn-submit { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
-    .btn-submit:hover { background: #1d4ed8; }
-    
-    .toggle-text { text-align: center; font-size: 13px; color: #94a3b8; margin-top: 20px; }
-    .toggle-link { color: #60a5fa; cursor: pointer; font-weight: 600; text-decoration: underline; }
-    
-    .alert { padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; text-align: center; }
-    .alert-error { background: #7f1d1d; color: #fca5a5; }
-    .alert-success { background: #14532d; color: #86efac; }
-  </style>
+  <title>Katalog Video Promo Gratis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col justify-between p-4 md:p-8">
 
-  <div class="auth-card">
-    <div class="title" id="form-title">Masuk Penonton</div>
-    <div class="subtitle" id="form-subtitle">Pilih metode masuk untuk menonton</div>
-
-    <div id="alert-msg" class="alert"></div>
-
-    <!-- Tombol Login Google & Facebook -->
-    <button type="button" class="social-btn" onclick="loginWithProvider('google')">
-      <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
-      Lanjutkan dengan Google
-    </button>
-
-    <button type="button" class="social-btn" onclick="loginWithProvider('facebook')">
-      <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook">
-      Lanjutkan dengan Facebook
-    </button>
-
-    <div class="divider"><span>Atau pakai email</span></div>
-
-    <!-- Form Email & Password -->
-    <form id="auth-form">
-      <div class="form-group">
-        <label for="email">Alamat Email</label>
-        <input type="email" id="email" placeholder="nama@email.com" required>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Kata Sandi</label>
-        <input type="password" id="password" placeholder="••••••••" required>
-      </div>
-
-      <button type="submit" class="btn-submit" id="btn-text">Masuk</button>
-    </form>
-
-    <div class="toggle-text">
-      <span id="toggle-label">Belum punya akun?</span> 
-      <span class="toggle-link" id="toggle-btn" onclick="toggleMode()">Daftar Sekarang</span>
+  <!-- Header Promo Gratis -->
+  <header class="max-w-6xl w-full mx-auto mb-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-800 pb-4">
+    <div>
+      <h1 class="text-2xl font-bold text-blue-400">Katalog Video Promo</h1>
+      <p class="text-sm text-gray-400">Pilih judul di daftar kanan untuk menonton cuplikan video secara gratis.</p>
     </div>
-  </div>
+    <div class="bg-blue-900/40 border border-blue-500/30 text-blue-300 px-4 py-2 rounded-lg text-xs md:text-sm font-medium">
+      ✨ Tonton Gratis
+    </div>
+  </header>
+
+  <!-- Container Utama (Kotak 1 & Kotak 2) -->
+  <main class="max-w-6xl w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 flex-grow">
+    
+    <!-- KOTAK 1: Video Player -->
+    <section class="md:col-span-2 bg-black rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-center items-center relative aspect-video">
+      <iframe id="mainPlayer" src="" class="w-full h-full border-0" allow="autoplay" allowfullscreen></iframe>
+      <div id="playerPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-950 text-gray-500">
+        Memuat video dari Google Drive...
+      </div>
+    </section>
+
+    <!-- KOTAK 2: Daftar Video Google Drive -->
+    <section class="bg-gray-800 rounded-xl p-4 border border-gray-700 flex flex-col h-[400px] md:h-auto">
+      <h2 class="text-lg font-semibold mb-3 border-b border-gray-700 pb-2 flex justify-between items-center">
+        <span>Daftar Video</span>
+        <span id="videoCount" class="text-xs bg-blue-600 px-2 py-0.5 rounded-full text-white">0</span>
+      </h2>
+      
+      <ul id="playlist" class="overflow-y-auto flex-grow space-y-2 pr-1 custom-scrollbar">
+        <li class="text-sm text-gray-400 animate-pulse">Mengambil data dari Drive...</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-6xl w-full mx-auto text-center text-xs text-gray-500 mt-8">
+    &copy; 2026 Platform Video Promo. Free Access Version.
+  </footer>
 
   <script>
-    const SUPABASE_URL = "https://ifpmmjfmbwxrfxlkinub.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmcG1tamZtNGNtejRiR3RwYm5WaWxpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzT0RVMk56STBORDVzSW1WNGNDSTZNakV3TVRBME1EQTBNWDAtazBsektHOERIdll2WTVtVmFLTVk4Nld1N21pOFdQZ25GbHpPUkV1Rms=";
+    // URL Script milik Anda sudah otomatis terpasang di sini
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyrqECNdNzqgwZ0yKt56n-5cUxIteliBnU7gRBAszDei91UGRU5yo-oB9gXT-qZHRDG/exec";
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const mainPlayer = document.getElementById('mainPlayer');
+    const playerPlaceholder = document.getElementById('playerPlaceholder');
+    const playlistContainer = document.getElementById('playlist');
+    const videoCount = document.getElementById('videoCount');
 
-    let isLoginMode = true;
+    async function loadPlaylist() {
+      try {
+        const response = await fetch(GAS_API_URL);
+        const json = await response.json();
 
-    // Login via Google / Facebook
-    async function loginWithProvider(providerName) {
-      hideAlert();
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: providerName,
-        options: {
-          redirectTo: window.location.href
+        if (json.status === "success" && json.data.length > 0) {
+          playlistContainer.innerHTML = "";
+          videoCount.textContent = json.data.length;
+
+          json.data.forEach((video, index) => {
+            const li = document.createElement('li');
+            li.className = `p-3 rounded-lg bg-gray-700/50 hover:bg-blue-600/30 border border-gray-600/30 cursor-pointer transition flex items-center gap-3 text-sm playlist-item`;
+            li.setAttribute('data-id', video.id);
+            li.innerHTML = `
+              <span class="font-mono text-xs text-gray-400 w-6">${index + 1}.</span>
+              <span class="truncate flex-grow font-medium">${video.name}</span>
+              <span class="text-xs text-blue-400">▶ Putar</span>
+            `;
+
+            li.addEventListener('click', () => {
+              playVideo(video.id, li);
+            });
+
+            playlistContainer.appendChild(li);
+          });
+
+          // Otomatis putar video pertama
+          playVideo(json.data[0].id, playlistContainer.children[0]);
+
+        } else {
+          playlistContainer.innerHTML = `<li class="text-sm text-red-400">Tidak ada video ditemukan di folder.</li>`;
         }
+      } catch (err) {
+        console.error(err);
+        playlistContainer.innerHTML = `<li class="text-sm text-red-400">Gagal memuat video. Periksa koneksi/konfigurasi.</li>`;
+      }
+    }
+
+    function playVideo(driveId, element) {
+      document.querySelectorAll('.playlist-item').forEach(el => {
+        el.classList.remove('bg-blue-600', 'border-blue-400');
+        el.classList.add('bg-gray-700/50');
       });
-      if (error) showAlert(error.message, 'error');
+      element.classList.remove('bg-gray-700/50');
+      element.classList.add('bg-blue-600', 'border-blue-400');
+
+      playerPlaceholder.style.display = 'none';
+      mainPlayer.src = `https://drive.google.com/file/d/${driveId}/preview`;
     }
 
-    function toggleMode() {
-      isLoginMode = !isLoginMode;
-      const title = document.getElementById('form-title');
-      const btnText = document.getElementById('btn-text');
-      const toggleLabel = document.getElementById('toggle-label');
-      const toggleBtn = document.getElementById('toggle-btn');
-      hideAlert();
-
-      if (isLoginMode) {
-        title.innerText = "Masuk Penonton";
-        btnText.innerText = "Masuk";
-        toggleLabel.innerText = "Belum punya akun?";
-        toggleBtn.innerText = "Daftar Sekarang";
-      } else {
-        title.innerText = "Daftar Akun Baru";
-        btnText.innerText = "Daftar";
-        toggleLabel.innerText = "Sudah punya akun?";
-        toggleBtn.innerText = "Masuk di sini";
-      }
-    }
-
-    document.getElementById('auth-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      hideAlert();
-
-      if (isLoginMode) {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          showAlert(error.message, 'error');
-        } else {
-          showAlert('Login berhasil!', 'success');
-        }
-      } else {
-        const { data, error } = await supabase.auth.signUp({ email, password });
-        if (error) {
-          showAlert(error.message, 'error');
-        } else {
-          showAlert('Pendaftaran berhasil! Cek email kamu untuk konfirmasi, atau matikan "Confirm Email" di Supabase.', 'success');
-        }
-      }
-    });
-
-    function showAlert(msg, type) {
-      const alertBox = document.getElementById('alert-msg');
-      alertBox.innerText = msg;
-      alertBox.className = `alert alert-${type}`;
-      alertBox.style.display = 'block';
-    }
-
-    function hideAlert() {
-      const alertBox = document.getElementById('alert-msg');
-      alertBox.style.display = 'none';
-    }
+    loadPlaylist();
   </script>
-
 </body>
 </html>
