@@ -8,55 +8,77 @@
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col justify-between p-4 md:p-8">
 
-  <!-- Header Promo Gratis -->
-  <header class="max-w-6xl w-full mx-auto mb-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-800 pb-4">
+  <!-- Header & Tombol Menu Daftar Video -->
+  <header class="max-w-5xl w-full mx-auto mb-4 flex justify-between items-center border-b border-gray-800 pb-4">
     <div>
-      <h1 class="text-2xl font-bold text-blue-400">Katalog Video Promo</h1>
-      <p class="text-sm text-gray-400">Pilih judul di daftar kanan untuk menonton cuplikan video secara gratis.</p>
+      <h1 class="text-xl md:text-2xl font-bold text-blue-400">Katalog Video Promo</h1>
+      <p class="text-xs md:text-sm text-gray-400">Tonton cuplikan video secara gratis.</p>
     </div>
-    <div class="bg-blue-900/40 border border-blue-500/30 text-blue-300 px-4 py-2 rounded-lg text-xs md:text-sm font-medium">
-      ✨ Tonton Gratis
-    </div>
+    
+    <!-- Tombol untuk Membuka Menu Daftar Video -->
+    <button id="openMenuBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-lg transition active:scale-95">
+      <span>📋 Daftar Video</span>
+      <span id="videoCount" class="bg-blue-800 text-xs px-2 py-0.5 rounded-full">0</span>
+    </button>
   </header>
 
-  <!-- Container Utama (Kotak 1 & Kotak 2) -->
-  <main class="max-w-6xl w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 flex-grow">
-    
-    <!-- KOTAK 1: Video Player -->
-    <section class="md:col-span-2 bg-black rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-center items-center relative aspect-video">
-      <iframe id="mainPlayer" src="" class="w-full h-full border-0" allow="autoplay" allowfullscreen></iframe>
-      <div id="playerPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-950 text-gray-500">
+  <!-- Container Utama: Pemutar Video Layar Penuh -->
+  <main class="max-w-5xl w-full mx-auto flex-grow flex flex-col justify-center">
+    <section class="bg-black rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-center items-center relative aspect-video shadow-2xl">
+      <video id="mainPlayer" controls autoplay class="w-full h-full object-contain rounded-xl"></video>
+      <div id="playerPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-950 text-gray-400 text-sm">
         Memuat video dari Google Drive...
       </div>
     </section>
-
-    <!-- KOTAK 2: Daftar Video Google Drive -->
-    <section class="bg-gray-800 rounded-xl p-4 border border-gray-700 flex flex-col h-[400px] md:h-auto">
-      <h2 class="text-lg font-semibold mb-3 border-b border-gray-700 pb-2 flex justify-between items-center">
-        <span>Daftar Video</span>
-        <span id="videoCount" class="text-xs bg-blue-600 px-2 py-0.5 rounded-full text-white">0</span>
-      </h2>
-      
-      <ul id="playlist" class="overflow-y-auto flex-grow space-y-2 pr-1 custom-scrollbar">
-        <li class="text-sm text-gray-400 animate-pulse">Mengambil data dari Drive...</li>
-      </ul>
-    </section>
-
   </main>
 
+  <!-- Menu Modal (Pop-up Daftar Video) -->
+  <div id="menuModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl">
+      
+      <!-- Header Pop-up -->
+      <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+        <h2 class="text-base font-semibold text-white flex items-center gap-2">
+          <span>📋 Pilih Judul Video</span>
+        </h2>
+        <button id="closeMenuBtn" class="text-gray-400 hover:text-white text-2xl font-bold px-2">&times;</button>
+      </div>
+
+      <!-- Daftar Judul Video (Scrollable) -->
+      <div class="p-4 overflow-y-auto flex-grow">
+        <ul id="playlist" class="space-y-2">
+          <li class="text-sm text-gray-400 animate-pulse">Mengambil data dari Drive...</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Footer -->
-  <footer class="max-w-6xl w-full mx-auto text-center text-xs text-gray-500 mt-8">
+  <footer class="max-w-5xl w-full mx-auto text-center text-xs text-gray-500 mt-6">
     &copy; 2026 Platform Video Promo. Free Access Version.
   </footer>
 
   <script>
-    // URL Script milik Anda sudah otomatis terpasang di sini
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyrqECNdNzqgwZ0yKt56n-5cUxIteliBnU7gRBAszDei91UGRU5yo-oB9gXT-qZHRDG/exec";
 
     const mainPlayer = document.getElementById('mainPlayer');
     const playerPlaceholder = document.getElementById('playerPlaceholder');
     const playlistContainer = document.getElementById('playlist');
     const videoCount = document.getElementById('videoCount');
+    
+    const menuModal = document.getElementById('menuModal');
+    const openMenuBtn = document.getElementById('openMenuBtn');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+
+    // Buka dan Tutup Modal
+    openMenuBtn.addEventListener('click', () => menuModal.classList.remove('hidden'));
+    closeMenuBtn.addEventListener('click', () => menuModal.classList.add('hidden'));
+    
+    // Tutup modal jika area gelap di luar kotak diklik
+    menuModal.addEventListener('click', (e) => {
+      if (e.target === menuModal) menuModal.classList.add('hidden');
+    });
 
     async function loadPlaylist() {
       try {
@@ -69,16 +91,17 @@
 
           json.data.forEach((video, index) => {
             const li = document.createElement('li');
-            li.className = `p-3 rounded-lg bg-gray-700/50 hover:bg-blue-600/30 border border-gray-600/30 cursor-pointer transition flex items-center gap-3 text-sm playlist-item`;
+            li.className = `p-3 rounded-lg bg-gray-700/50 hover:bg-blue-600 border border-gray-600/30 cursor-pointer transition flex items-center gap-3 text-sm playlist-item`;
             li.setAttribute('data-id', video.id);
             li.innerHTML = `
               <span class="font-mono text-xs text-gray-400 w-6">${index + 1}.</span>
-              <span class="truncate flex-grow font-medium">${video.name}</span>
-              <span class="text-xs text-blue-400">▶ Putar</span>
+              <span class="truncate flex-grow font-medium text-white">${video.name}</span>
+              <span class="text-xs text-blue-300">▶ Putar</span>
             `;
 
             li.addEventListener('click', () => {
               playVideo(video.id, li);
+              menuModal.classList.add('hidden'); // Otomatis tutup menu setelah video dipilih
             });
 
             playlistContainer.appendChild(li);
@@ -105,7 +128,9 @@
       element.classList.add('bg-blue-600', 'border-blue-400');
 
       playerPlaceholder.style.display = 'none';
-      mainPlayer.src = `https://drive.google.com/file/d/${driveId}/preview`;
+      
+      mainPlayer.src = `https://lh3.googleusercontent.com/d/${driveId}`;
+      mainPlayer.play().catch(() => {});
     }
 
     loadPlaylist();
