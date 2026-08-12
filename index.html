@@ -16,28 +16,34 @@
       <span class="text-xs bg-blue-900/50 text-blue-300 border border-blue-500/30 px-2.5 py-1 rounded-full">Free Access</span>
     </header>
 
-    <!-- Bar Informasi Video & Tombol Menu (Menempel di Atas Video) -->
+    <!-- Bar Informasi Video & Tombol Menu -->
     <div class="flex items-center justify-between bg-gray-900 p-2.5 rounded-xl border border-gray-800 gap-2">
-      <!-- Label Judul Video yang Sedang Diputar -->
       <div class="flex items-center gap-2 overflow-hidden flex-grow min-w-0">
         <span class="text-xs text-blue-400 font-semibold shrink-0">▶ Diputar:</span>
         <span id="currentVideoTitle" class="text-xs md:text-sm font-medium text-gray-200 truncate">Memuat video...</span>
       </div>
 
-      <!-- Tombol Pilih Video -->
       <button id="openMenuBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shrink-0 shadow transition active:scale-95">
         <span>📋 Pilih Video</span>
         <span id="videoCount" class="bg-blue-800 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
       </button>
     </div>
 
-    <!-- Pemutar Video (Ukuran Pas & Presisi) -->
+    <!-- Pemutar Video -->
     <main class="w-full bg-black rounded-xl overflow-hidden border border-gray-800 relative aspect-video shadow-2xl">
       <iframe id="mainPlayer" class="w-full h-full border-0" allow="autoplay; fullscreen" allowfullscreen></iframe>
       <div id="playerPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-900 text-gray-400 text-xs md:text-sm">
         Memuat pemutar video...
       </div>
     </main>
+
+    <!-- Kotak Catatan / Tutorial Penonton -->
+    <div class="bg-amber-950/40 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-200/90 leading-relaxed flex items-start gap-2.5 shadow-md">
+      <span class="text-base shrink-0">💡</span>
+      <p>
+        <strong class="text-amber-400 font-semibold">Petunjuk:</strong> Jika video buram dan gelap, klik pada area kosong di pemutar video tunggu 5 DETIK untuk mendapat gambar yg jernih ATAU klik kotak kecil tanda panah pada sisi atas kanan di area pemutar video untuk membuka di google Drive (jangan lupa login dengan akun Gmail) miringkan hp untuk tampilan layar yg lebih besar.
+      </p>
+    </div>
 
   </div>
 
@@ -129,7 +135,6 @@
       element.classList.remove('bg-gray-800/60');
       element.classList.add('bg-blue-600', 'border-blue-400');
 
-      // Update Teks Judul Video di Atas Player
       currentVideoTitle.textContent = title;
 
       playerPlaceholder.style.display = 'none';
